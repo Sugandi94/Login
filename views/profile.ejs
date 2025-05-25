@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Profile</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <%- include('partials/header') %>
+  <div class="profile-container">
+    <div class="profile-box">
+      <h2>Profile Settings</h2>
+      <% if (error) { %>
+        <div class="error-message">
+          <p><%= error %></p>
+        </div>
+      <% } %>
+      <% if (success) { %>
+        <div class="success-message">
+          <p><%= success %></p>
+        </div>
+      <% } %>
+      <form action="/update-profile" method="POST" class="profile-form">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" value="<%= user.name || '' %>" placeholder="Enter your full name">
+        </div>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" value="<%= user.username %>" readonly>
+        </div>
+        <div class="form-group">
+          <label for="newPassword">New Password (leave blank to keep current)</label>
+          <input type="password" id="newPassword" name="newPassword" placeholder="Enter new password">
+        </div>
+        <button type="submit" class="save-button">Save Changes</button>
+      </form>
+    </div>
+  </div>
+  <%- include('partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <%- include('partials/header') %>
+  <div class="dashboard-container">
+    <div class="dashboard-header">
+      <h2>Dashboard Overview</h2>
+    </div>
+
+    <% if (role === 'admin') { %>
+    <div class="add-user-form">
+      <h3>Tambah User Baru</h3>
+      <form action="/add-user" method="POST">
+        <input type="text" name="name" placeholder="Nama Lengkap" required>
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Tambah User</button>
+      </form>
+    </div>
+    <% } %>
+
+    <div class="users-table">
+      <h3>Daftar User</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Nama</th>
+            <th>Username</th>
+            <th>Role</th>
+            <% if (role === 'admin') { %>
+              <th>Actions</th>
+            <% } %>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.forEach(user => { %>
+            <tr>
+              <td><%= user.name || '-' %></td>
+              <td><%= user.username %></td>
+              <td><%= user.role %></td>
+              <% if (role === 'admin' && user.role !== 'admin') { %>
+                <td class="actions">
+                  <button onclick="showEditForm('<%= user.username %>', '<%= user.name %>')" class="edit-btn">Edit</button>
+                  <form action="/delete-user/<%= user.username %>" method="POST" style="display: inline;">
+                    <button type="submit" class="delete-btn">Delete</button>
+                  </form>
+                </td>
+              <% } %>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Edit User Modal -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <h3>Edit User</h3>
+      <form action="/edit-user" method="POST">
+        <input type="hidden" id="oldUsername" name="oldUsername">
+        <input type="text" id="newUsername" name="newUsername" placeholder="New Username" required>
+        <input type="text" id="newName" name="newName" placeholder="New Name" required>
+        <input type="password" id="newPassword" name="newPassword" placeholder="New Password">
+        <button type="submit">Save Changes</button>
+        <button type="button" onclick="closeEditModal()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function showEditForm(username, name) {
+      document.getElementById('editModal').style.display = 'block';
+      document.getElementById('oldUsername').value = username;
+      document.getElementById('newUsername').value = username;
+      document.getElementById('newName').value = name || '';
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').style.display = 'none';
+    }
+  </script>
+  <%- include('partials/footer') %>
+</body>
+</html>
